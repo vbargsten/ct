@@ -11,11 +11,11 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread -std=c++11 -Wall")
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -pthread -std=c++11 -Wall")
 SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-find_package(catkin REQUIRED)
+# find_package(catkin REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS REQUIRED)
 
-find_package(PythonLibs QUIET)
+find_package(PythonLibs 2.7 EXACT QUIET)
 find_package(Qwt QUIET)
 find_package(Qt4 QUIET)
 
@@ -43,7 +43,7 @@ endif()
 
 include_directories(
   ${BOOST_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
+#   ${catkin_INCLUDE_DIRS}
 )
 
 include_directories (
@@ -64,20 +64,20 @@ endif(USE_PRESPEC)
 #used later for clang-tidy
 set(INC_DIRS ${BOOST_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/include/external" ${EIGEN3_INCLUDE_DIR})
 
-catkin_package(
-   INCLUDE_DIRS
-        ${BOOST_INCLUDE_DIRS}
-        include
-        include/external
-        examples
-        ${EIGEN3_INCLUDE_DIR}
-   LIBRARIES
-       dl
-       ct_core
-       ${PRESPEC_LIB_NAMES}
-   DEPENDS
-       EIGEN3
-)
+# catkin_package(
+#    INCLUDE_DIRS
+#         ${BOOST_INCLUDE_DIRS}
+#         include
+#         include/external
+#         examples
+#         ${EIGEN3_INCLUDE_DIR}
+#    LIBRARIES
+#        dl
+#        ct_core
+#        ${PRESPEC_LIB_NAMES}
+#    DEPENDS
+#        EIGEN3
+# )
 
 
 set(CODEGEN_TEMPLATE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/templates")
@@ -90,10 +90,13 @@ add_library(ct_core
 )
 
 # add libraries for explicit templates
-target_link_libraries(ct_core ${catkin_LIBRARIES} ${PYTHON_LIBRARY})
-if(USE_PRESPEC)
-    ct_add_explicit_template_libs()
-endif(USE_PRESPEC)
+target_link_libraries(ct_core 
+#   ${catkin_LIBRARIES} 
+  ${PYTHON_LIBRARY}
+)
+# if(USE_PRESPEC)
+#     ct_add_explicit_template_libs()
+# endif(USE_PRESPEC)
 
 if(BUILD_EXAMPLES)
     add_executable(ex_DampedOscillatorCustomController examples/DampedOscillatorCustomController.cpp)
@@ -101,77 +104,77 @@ if(BUILD_EXAMPLES)
     add_executable(ex_MasspointIntegration examples/MasspointIntegration.cpp)
 endif()
 
-catkin_add_gtest(NoiseTest test/NoiseTest.cpp)
-target_link_libraries(NoiseTest ${catkin_LIBRARIES})
+# catkin_add_gtest(NoiseTest test/NoiseTest.cpp)
+# target_link_libraries(NoiseTest ${catkin_LIBRARIES})
 
-catkin_add_gtest(SecondOrderSystemTest test/SecondOrderSystemTest.cpp)
-target_link_libraries(SecondOrderSystemTest ${catkin_LIBRARIES})
+# catkin_add_gtest(SecondOrderSystemTest test/SecondOrderSystemTest.cpp)
+# target_link_libraries(SecondOrderSystemTest ${catkin_LIBRARIES})
 
 # This test is not required to link against ${PRESPEC_LIB_NAMES} as it is not using prespec. Here we ensure that linking against it does not fail.
-catkin_add_gtest(IntegrationTest test/integration/IntegrationTest.cpp)
-target_link_libraries(IntegrationTest ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
+# catkin_add_gtest(IntegrationTest test/integration/IntegrationTest.cpp)
+# target_link_libraries(IntegrationTest ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
 
-catkin_add_gtest(IntegratorComparison test/integration/IntegratorComparison.cpp)
-target_link_libraries(IntegratorComparison ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(SymplecticIntegrationTest test/integration/SymplecticIntegrationTest.cpp)
-target_link_libraries(SymplecticIntegrationTest ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(SystemDiscretizerTest test/integration/SystemDiscretizerTest.cpp)
-target_link_libraries(SystemDiscretizerTest ${catkin_LIBRARIES} ct_core)
-
-add_executable(SensitivityTest test/integration/sensitivity/SensitivityTest.cpp)
-target_link_libraries(SensitivityTest ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(InterpolationTest test/InterpolationTest.cpp)
-target_link_libraries(InterpolationTest ${catkin_LIBRARIES})
-
-catkin_add_gtest(DiscreteArrayTest test/DiscreteArrayTest.cpp)
-target_link_libraries(DiscreteArrayTest ${catkin_LIBRARIES})
-
-catkin_add_gtest(DiscreteTrajectoryTest test/DiscreteTrajectoryTest.cpp)
-target_link_libraries(DiscreteTrajectoryTest ${catkin_LIBRARIES})
-
-catkin_add_gtest(LinspaceTest test/LinspaceTest.cpp)
-target_link_libraries(LinspaceTest ${catkin_LIBRARIES})
-
-catkin_add_gtest(AutoDiffLinearizerTest test/AutoDiffLinearizerTest.cpp)
-target_link_libraries(AutoDiffLinearizerTest ${catkin_LIBRARIES} ct_core pthread)
-
-catkin_add_gtest(SwitchingTest test/switching/SwitchingTest.cpp)
-target_link_libraries(SwitchingTest ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(SwitchedControlledSystemTest test/switching/SwitchedControlledSystemTest.cpp)
-target_link_libraries(SwitchedControlledSystemTest ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(SwitchedDiscreteControlledSystemTest test/switching/SwitchedDiscreteControlledSystemTest.cpp)
-target_link_libraries(SwitchedDiscreteControlledSystemTest ${catkin_LIBRARIES} ct_core)
-
-catkin_add_gtest(MatrixInversionTest test/math/MatrixInversionTest.cpp)
-target_link_libraries(MatrixInversionTest ${catkin_LIBRARIES})
-
-# Codegen tests cannot run in parallel. Thus we build and run all codegen tests in one
-catkin_add_gtest(CodegenTests test/CodegenTests.cpp)
-target_link_libraries(CodegenTests ${catkin_LIBRARIES} ct_core dl pthread)
-
-## example for using the build-in plotting tool
-add_executable(plotTest test/plot/plotTest.cpp)
-target_link_libraries(plotTest ${catkin_LIBRARIES} ct_core)
-
-if(QWT_ENABLED)
-    add_executable(plotQwtTest test/plot/plotQwtTest.cpp)
-    target_link_libraries(plotQwtTest ${catkin_LIBRARIES} ct_core ${ct_core_extra_libs} pthread)
-endif()
-
-
-## unit tests for prespec templates
-if(USE_PRESPEC)
-    catkin_add_gtest(IntegrationTestPrespec test/integration/IntegrationTestPrespec.cpp)
-    target_link_libraries(IntegrationTestPrespec ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
-
-    catkin_add_gtest(IntegratorComparisonPrespec test/integration/IntegratorComparisonPrespec.cpp)
-    target_link_libraries(IntegratorComparisonPrespec ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
-endif(USE_PRESPEC)
+# catkin_add_gtest(IntegratorComparison test/integration/IntegratorComparison.cpp)
+# target_link_libraries(IntegratorComparison ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(SymplecticIntegrationTest test/integration/SymplecticIntegrationTest.cpp)
+# target_link_libraries(SymplecticIntegrationTest ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(SystemDiscretizerTest test/integration/SystemDiscretizerTest.cpp)
+# target_link_libraries(SystemDiscretizerTest ${catkin_LIBRARIES} ct_core)
+# 
+# add_executable(SensitivityTest test/integration/sensitivity/SensitivityTest.cpp)
+# target_link_libraries(SensitivityTest ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(InterpolationTest test/InterpolationTest.cpp)
+# target_link_libraries(InterpolationTest ${catkin_LIBRARIES})
+# 
+# catkin_add_gtest(DiscreteArrayTest test/DiscreteArrayTest.cpp)
+# target_link_libraries(DiscreteArrayTest ${catkin_LIBRARIES})
+# 
+# catkin_add_gtest(DiscreteTrajectoryTest test/DiscreteTrajectoryTest.cpp)
+# target_link_libraries(DiscreteTrajectoryTest ${catkin_LIBRARIES})
+# 
+# catkin_add_gtest(LinspaceTest test/LinspaceTest.cpp)
+# target_link_libraries(LinspaceTest ${catkin_LIBRARIES})
+# 
+# catkin_add_gtest(AutoDiffLinearizerTest test/AutoDiffLinearizerTest.cpp)
+# target_link_libraries(AutoDiffLinearizerTest ${catkin_LIBRARIES} ct_core pthread)
+# 
+# catkin_add_gtest(SwitchingTest test/switching/SwitchingTest.cpp)
+# target_link_libraries(SwitchingTest ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(SwitchedControlledSystemTest test/switching/SwitchedControlledSystemTest.cpp)
+# target_link_libraries(SwitchedControlledSystemTest ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(SwitchedDiscreteControlledSystemTest test/switching/SwitchedDiscreteControlledSystemTest.cpp)
+# target_link_libraries(SwitchedDiscreteControlledSystemTest ${catkin_LIBRARIES} ct_core)
+# 
+# catkin_add_gtest(MatrixInversionTest test/math/MatrixInversionTest.cpp)
+# target_link_libraries(MatrixInversionTest ${catkin_LIBRARIES})
+# 
+# # Codegen tests cannot run in parallel. Thus we build and run all codegen tests in one
+# catkin_add_gtest(CodegenTests test/CodegenTests.cpp)
+# target_link_libraries(CodegenTests ${catkin_LIBRARIES} ct_core dl pthread)
+# 
+# ## example for using the build-in plotting tool
+# add_executable(plotTest test/plot/plotTest.cpp)
+# target_link_libraries(plotTest ${catkin_LIBRARIES} ct_core)
+# 
+# if(QWT_ENABLED)
+#     add_executable(plotQwtTest test/plot/plotQwtTest.cpp)
+#     target_link_libraries(plotQwtTest ${catkin_LIBRARIES} ct_core ${ct_core_extra_libs} pthread)
+# endif()
+# 
+# 
+# ## unit tests for prespec templates
+# if(USE_PRESPEC)
+#     catkin_add_gtest(IntegrationTestPrespec test/integration/IntegrationTestPrespec.cpp)
+#     target_link_libraries(IntegrationTestPrespec ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
+# 
+#     catkin_add_gtest(IntegratorComparisonPrespec test/integration/IntegratorComparisonPrespec.cpp)
+#     target_link_libraries(IntegratorComparisonPrespec ${catkin_LIBRARIES} ct_core ${PRESPEC_LIB_NAMES})
+# endif(USE_PRESPEC)
 
 
 ## build doxygen documentation
@@ -191,4 +194,4 @@ if(DOXYGEN_FOUND)
         VERBATIM)
 endif()
 
-ct_configure_clang_tidy(INC_DIRS)
+# ct_configure_clang_tidy(INC_DIRS)
