@@ -1,19 +1,10 @@
-cmake_minimum_required (VERSION 2.6)
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/../ct/cmake/compilerSettings.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/../ct/cmake/explicitTemplateHelpers.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/../ct/cmake/clang-cxx-dev-tools.cmake)
-
 project (ct_optcon)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/externalSolvers.cmake)
 
-find_package(ct_core REQUIRED)
+#find_package(ct_core REQUIRED)
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -pthread -fopenmp -std=c++11 -Wall")
-SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -pthread -std=c++11 -Wall")
-SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 option(MATLAB "Compile with matlab support" OFF)
 option(MATLAB_FULL_LOG "Expose all variables to Matlab (very slow)" OFF)
@@ -69,7 +60,6 @@ endif(LAPACK_FOUND)
 
 include_directories(
     include
-    ${catkin_INCLUDE_DIRS}
 )
 
 ## assemble list of libraries that contain prespecified templates
@@ -80,6 +70,10 @@ endif(USE_PRESPEC)
 
 #used later for clang-tidy
 set(INC_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" ${HPIPM_INCLUDE_DIR} ${BLASFEO_INCLUDE_DIR})
+
+add_library(ct_optcon INTERFACE)
+target_include_directories(ct_optcon INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries(ct_optcon INTERFACE ct_core)
 
 # catkin_package(
 #    INCLUDE_DIRS
@@ -100,7 +94,7 @@ set(INC_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" ${HPIPM_INCLUDE_DIR} ${BLASFE
 ## build SNOPT library
 if(BUILD_WITH_SNOPT_SUPPORT)
     add_library(ct_snopt_interface src/nlp/solver/SnoptSolver.cpp)
-    target_link_libraries(ct_snopt_interface ${catkin_LIBRARIES} ${SNOPT_LIBS})
+    target_link_libraries(ct_snopt_interface ${SNOPT_LIBS})
 endif()
 
 
@@ -151,6 +145,34 @@ endif(HPIPM)
 get_filename_component(DMS_OSC_TEST_MAT_DIR "test/dms/oscillator/matfiles" ABSOLUTE)
 configure_file(test/dms/oscillator/oscDMSTest_settings.h.in test/dms/oscillator/oscDMSTest_settings.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/test/dms/oscillator)
+
+
+include(External_GTest)
+
+cmake_policy(SET CMP0054 NEW)
+cmake_policy(SET CMP0057 NEW)
+include(GoogleTest)
+
+find_package (Eigen3 REQUIRED NO_MODULE)
+
+add_executable(LqrTest test/lqr/LqrTest.cpp)
+target_link_libraries(LqrTest ${LAPACK_LIBS} ${MATLAB_LIBS} ${GTEST_LIBRARY} ${EIGEN3_LIBS} ct_optcon ct_core)
+# target_include_directories(LqrTest PRIVATE $<INSTALL_INTERFACE:include/> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ct_core/include/>
+# $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../ct_core/include/ct/external>
+# ${EIGEN3_INCLUDE_DIR})
+
+gtest_add_tests(TARGET      LqrTest)
+#                 TEST_SUFFIX .noArgs
+#                 TEST_LIST   noArgsTests
+# )
+# gtest_add_tests(TARGET      FooTest
+#                 EXTRA_ARGS  --someArg someValue
+#                 TEST_SUFFIX .withArgs
+#                 TEST_LIST   withArgsTests
+# )
+set_tests_properties(${noArgsTests}   PROPERTIES TIMEOUT 10)
+# set_tests_properties(${withArgsTests} PROPERTIES TIMEOUT 20)
+
 # 
 # catkin_add_gtest(LqrTest test/lqr/LqrTest.cpp)
 # target_link_libraries(LqrTest ${catkin_LIBRARIES} ${LAPACK_LIBS} ${MATLAB_LIBS})
@@ -258,6 +280,15 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/test/nloc)
 #     catkin_add_gtest(system_interface_test_prespec test/system_interface/SystemInterfaceTest-Prespec.cpp)
 #     target_link_libraries(system_interface_test_prespec ${catkin_LIBRARIES} ${PRESPEC_LIB_NAMES})
 # endif(USE_PRESPEC)
+
+install(TARGETS ct_optcon DESTINATION lib/ct)
+install (
+    DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
+    DESTINATION include
+    FILES_MATCHING 
+    PATTERN "*.hpp"
+    PATTERN "*.h"
+)
 
 ## build doxygen documentation
 find_package(Doxygen)
