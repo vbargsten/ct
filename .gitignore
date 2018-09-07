@@ -1,6 +1,5 @@
 CMakeFiles/
 CMakeCache.txt
-*.cmake
 !clang-cxx-dev-tools.cmake
 !compilerSettings.cmake
 *.a
@@ -24,3 +23,4 @@ solution.mat
 *.tmp
 *.mat
 .settings/
+build/
