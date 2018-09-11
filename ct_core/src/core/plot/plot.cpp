@@ -228,19 +228,19 @@ bool hist(const Eigen::Ref<const Eigen::VectorXd>& x, const double bins, const s
         PyList_SetItem(xlist, i, PyFloat_FromDouble(x(i)));
     }
 
-    PyObject* bins_py = PyFloat_FromDouble(bins);
+    PyObject* bins_py = PyLong_FromDouble(bins);
     PyObject* histtype_py = PyString_FromString(histtype.c_str());
-
+    
     // construct positional args
-    PyObject* args = PyTuple_New(8);
-    PyTuple_SetItem(args, 0, xlist);
-    PyTuple_SetItem(args, 1, bins_py);
-    PyTuple_SetItem(args, 2, Py_None);
-    PyTuple_SetItem(args, 3, Py_False);
-    PyTuple_SetItem(args, 4, Py_None);
-    PyTuple_SetItem(args, 5, Py_False);
-    PyTuple_SetItem(args, 6, Py_None);
-    PyTuple_SetItem(args, 7, histtype_py);
+    PyObject* args = PyTuple_New(8);         
+    PyTuple_SetItem(args, 0, xlist);         // x 
+    PyTuple_SetItem(args, 1, bins_py);       // bins=None,
+    PyTuple_SetItem(args, 2, Py_None);       // range=None
+    PyTuple_SetItem(args, 3, Py_False);      // density=None
+    PyTuple_SetItem(args, 4, Py_None);       // weights=None
+    PyTuple_SetItem(args, 5, Py_False);      // cumulative=False
+    PyTuple_SetItem(args, 6, Py_None);       // bottom=None
+    PyTuple_SetItem(args, 7, histtype_py);   // histtype='bar'
 
     PyObject* res = PyObject_CallObject(detail::_interpreter::get().s_python_function_hist, args);
 
@@ -345,8 +345,8 @@ bool plot(const Eigen::Ref<const Eigen::MatrixXd>& x_raw,
     const Eigen::Ref<const Eigen::MatrixXd>& y_raw,
     const std::map<std::string, std::string>& keywords)
 {
-    CHECK_EQ(true, (x_raw.cols() == 1) || (x_raw.rows()) == 1);
-    CHECK_EQ(true, (y_raw.cols() == 1) || (y_raw.rows()) == 1);
+    CHECK_EQ(true, ((x_raw.cols() == 1) || (x_raw.rows()) == 1));
+    CHECK_EQ(true, ((y_raw.cols() == 1) || (y_raw.rows()) == 1));
 
     Eigen::Map<const Eigen::VectorXd> x(x_raw.data(), x_raw.rows() == 1 ? x_raw.cols() : x_raw.rows());
     Eigen::Map<const Eigen::VectorXd> y(y_raw.data(), y_raw.rows() == 1 ? y_raw.cols() : y_raw.rows());
@@ -395,8 +395,8 @@ bool plot(const Eigen::Ref<const Eigen::MatrixXd>& x_raw,
     const Eigen::Ref<const Eigen::MatrixXd>& y_raw,
     const std::string& s)
 {
-    CHECK_EQ(true, (x_raw.cols() == 1) || (x_raw.rows() == 1));
-    CHECK_EQ(true, (y_raw.cols() == 1) || (y_raw.rows() == 1));
+    CHECK_EQ(true, ((x_raw.cols() == 1) || (x_raw.rows()) == 1));
+    CHECK_EQ(true, ((y_raw.cols() == 1) || (y_raw.rows()) == 1));
 
     Eigen::Map<const Eigen::VectorXd> x(x_raw.data(), x_raw.rows() == 1 ? x_raw.cols() : x_raw.rows());
     Eigen::Map<const Eigen::VectorXd> y(y_raw.data(), y_raw.rows() == 1 ? y_raw.cols() : y_raw.rows());
