@@ -159,46 +159,38 @@ add_library(quadrotorDynamics
             src/Quadrotor/A_quadrotor.cpp
             src/Quadrotor/B_quadrotor.cpp
             src/Quadrotor/C_quadrotor.cpp)
-# getting the INTERFACE_INCLUDE_DIRECTORIES only won't work, so using this
-# to add the rbd include dirs. ehhh...
-
-# catkin_add_gtest(QuadrotorWithLoadTest test/QuadrotorWithLoad/QuadrotorWithLoadTest.cpp)
-# target_link_libraries(QuadrotorWithLoadTest
-#                       ct_models)
+            
 target_link_libraries(quadrotorDynamics PRIVATE ct_models)
 
-
 ## Unit tests
-# catkin_add_gtest(HyaTest test/HyA/HyATest.cpp)
-# target_link_libraries(HyaTest
-#                       ct_models
-#                       HyALinearizedForward)
+add_executable(QuadrotorWithLoadTest test/QuadrotorWithLoad/QuadrotorWithLoadTest.cpp)
+target_link_libraries(QuadrotorWithLoadTest ct_models ${GTEST_LIBRARY})
+
+add_executable(HyaTest test/HyA/HyATest.cpp)
+target_link_libraries(
+    HyaTest
+    ct_models
+    HyALinearizedForward
+    ${GTEST_LIBRARY}
+)
 
 ################ Inverse Kinematics #################
+get_property(
+    ct_rbd_include_dirs
+    TARGET ct_rbd PROPERTY
+    INTERFACE_INCLUDE_DIRECTORIES
+)
 add_library(hya_ik
   src/HyA/transform6d.cpp
 )
 set_target_properties(hya_ik PROPERTIES COMPILE_FLAGS "-fPIC -DIKFAST_NAMESPACE=hya_ik -DIKFAST_NO_MAIN -Wno-unused-variable")
-
-# getting the INTERFACE_INCLUDE_DIRECTORIES only won't work, so using this
-# to add the rbd include dirs. ehhh...
-target_link_libraries(hya_ik PRIVATE ct_rbd)
+target_include_directories(hya_ik PRIVATE ${ct_rbd_include_dirs})
 
 add_library(irb4600_ik
   src/Irb4600/transform6d.cpp
 )
-# get_property(
-#     ct_rbd_include_dirs
-#     TARGET ct_models
-#     INTERFACE_INCLUDE_DIRECTORIES
-# )
-# message("BLABLA: ${ct_rbd_include_dirs}")
-# target_include_directories(irb4600_ik $<BUILD_INTERFACE:$<TARGET_PROPERTY:ct_models,INTERFACE_INCLUDE_DIRECTORIES>>})
+target_include_directories(irb4600_ik PRIVATE ${ct_rbd_include_dirs})
 set_target_properties(irb4600_ik PROPERTIES COMPILE_FLAGS "-fPIC -DIKFAST_NAMESPACE=irb4600_ik -DIKFAST_NO_MAIN -Wno-unused-variable")
-
-# getting the INTERFACE_INCLUDE_DIRECTORIES only won't work, so using this
-# to add the rbd include dirs. ehhh...
-target_link_libraries(irb4600_ik PRIVATE ct_rbd)
 
 if(BUILD_EXAMPLES)
     message(STATUS "Building with examples.")
@@ -211,12 +203,15 @@ if(BUILD_EXAMPLES)
 endif()
 
 # Tests.
-# catkin_add_gtest(ikfast_test test/IKFast/IKFastTest.cpp)
-# target_link_libraries(ikfast_test
-#                       hya_ik
-#                       irb4600_ik
-#                       ct_models)
-
+add_executable(ikfast_test test/IKFast/IKFastTest.cpp)
+target_link_libraries(
+    ikfast_test
+    hya_ik
+    irb4600_ik
+    ct_models
+    ${GTEST_LIBRARY}
+)
+gtest_add_tests(TARGET ikfast_test)
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)

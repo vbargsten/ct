@@ -5,6 +5,8 @@ Licensed under Apache2 license (see LICENSE file in main directory)
 
 #pragma once
 
+#include "ct/core/plot/plot.h"
+
 template <size_t STATE_DIM, size_t CONTROL_DIM>
 void plotResultsOscillator(const ct::core::StateVectorArray<STATE_DIM>& stateArray,
     const ct::core::ControlVectorArray<CONTROL_DIM>& controlArray,

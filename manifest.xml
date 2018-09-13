@@ -1,0 +1,29 @@
+<package>
+  <description brief="Control Toolbox -- library for efficient modelling, control, estimation, trajectory optimization and model predictive control">
+  This is the ADRL Control Toolbox ('CT'), an open-source C++ library for efficient modelling, control, estimation, trajectory optimization and model predictive control. The CT is applicable to a broad class of dynamic systems, but features additional modelling tools specially designed for robotics. This page outlines its general concept, its major building blocks and highlights selected application examples.
+  </description>
+  <maintainer email="neunertm@gmail.com">Michael Neunert</maintainer>
+  <maintainer email="mgiftthaler@ethz.ch">Markus Giftthaler</maintainer>
+  <license>Apache v2</license>
+  <url>https://adrlab.bitbucket.io/ct</url>
+  <tags>stable</tags>
+  <keywords>
+     <keyword>Control</keyword>
+     <keyword>Optimization</keyword>
+   </keywords>
+
+  <stage>0</stage>
+  <use>single project</use>
+  <activity>active</activity>
+
+  <classifiers>
+    <classifier>c++</classifier>
+    <classifier>rock</classifier>
+    <classifier>ubuntu</classifier>
+  </classifiers>
+
+  <depend package="base/cmake" />
+  <depend package="eigen3" />
+  <depend package="control/kindr" />
+  <depend package="control/hpipm" />
+</package>
