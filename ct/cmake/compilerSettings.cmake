@@ -1,6 +1,6 @@
 option(USE_CLANG "Use CLANG instead of gcc for faster compilation" false)
 option(USE_INTEL "Use Intel ICC compiler" false)
-option(BUILD_EXAMPLES "Compile all examples for ct" false)
+option(BUILD_EXAMPLES "Compile all examples for ct" OFF)
 option(BUILD_HYQ_FULL "Compile all examples for HyQ (takes long, should use clang)" false)
 option(BUILD_HYQ_LINEARIZATION_TIMINGS "Build linearization timing tests for HyQ (takes long, should use clang)" false)
 option(BUILD_HYA_LINEARIZATION_TIMINGS "Build linearization timing tests for HyA (takes long, should use clang)" false)
@@ -22,15 +22,34 @@ set(INTEL_C_COMPILER "/opt/intel/bin/icc" CACHE STRING "Path to Intel C compiler
 set(INTEL_CXX_COMPILER "/opt/intel/bin/icpc" CACHE STRING "Path to Intel C++ compiler binary")
 
 if(USE_CLANG)
-    message (WARNING "USING CLANG with bin ${CLANG_C_COMPILER} and ${CLANG_CXX_COMPILER}. This will make compilation faster but execution could be slower.")
-    SET (CMAKE_C_COMPILER             ${CLANG_C_COMPILER})
-    SET (CMAKE_CXX_COMPILER           ${CLANG_CXX_COMPILER})
+    message ("USING CLANG with bin ${CLANG_C_COMPILER} and ${CLANG_CXX_COMPILER}. This will make compilation faster but execution could be slower.")
+    # Setting CMAKE_CXX_COMPILER will have the following problem:
+    #--- configuring with supplied settings ---
+    #....
+    #-- Configuring done
+    #You have changed variables that require your cache to be deleted.
+    #Configure will be re-run and you may have to reset some variables.
+    #The following variables have changed:
+    #CMAKE_C_COMPILER= /usr/bin/cc
+    #CMAKE_CXX_COMPILER= /usr/bin/c++
+    #...
+    #--- configuring again without any settings ---
+    #
+    #"Another way to deal with this is to set CMAKE_C_COMPILER and
+    #CMAKE_CXX_COMPILER *before* the first project() command."
+    #https://public.kitware.com/pipermail/cmake/2009-November/033133.html
+    #
+    #Or giving CMAKE_CXX_COMPILER intitially on the command line
+    #
+    SET (CMAKE_C_COMPILER   ${CLANG_C_COMPILER})
+    SET (CMAKE_CXX_COMPILER ${CLANG_CXX_COMPILER}) 
+    set(CMAKE_CXX_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -L${MKLROOT}/lib/intel64 -llibblas -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -llapacke -lblas -llapack -lliblapack -liblapacke")
 endif(USE_CLANG)
 
 if(USE_INTEL)
-    message (WARNING "USING INTEL compiler with bin ${CLANG_C_COMPILER} and ${CLANG_CXX_COMPILER}.")
-    SET (CMAKE_C_COMPILER             ${INTEL_C_COMPILER})
-    SET (CMAKE_CXX_COMPILER           ${INTEL_CXX_COMPILER})
+    message ("USING INTEL compiler with bin ${CLANG_C_COMPILER} and ${CLANG_CXX_COMPILER}.")
+    SET (CMAKE_C_COMPILER    ${INTEL_C_COMPILER}    )
+    SET (CMAKE_CXX_COMPILER  ${INTEL_CXX_COMPILER}  )
     set(CMAKE_CXX_LINKER_FLAGS "${CMAKE_CXX_LINKER_FLAGS} -L${MKLROOT}/lib/intel64 -llibblas -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -llapacke -lblas -llapack -lliblapack -liblapacke")
 endif(USE_INTEL)
 

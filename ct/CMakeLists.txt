@@ -1,7 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
-project(ct)
-find_package(catkin REQUIRED)
-catkin_metapackage()
+project(ct_meta)
 
 #Make sure metapackage does not fail when building documentation
 add_custom_target(doc
