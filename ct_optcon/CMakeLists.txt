@@ -170,7 +170,7 @@ target_link_libraries(LqrTest
     ${GTEST_LIBRARY} 
     ${EIGEN3_LIBS} 
 )
-gtest_add_tests(TARGET LqrTest)
+gtest_add_tests(LqrTest "" AUTO)
 
 # 
 # catkin_add_gtest(iLQRTest test/nloc/iLQRTest.cpp)
@@ -184,7 +184,7 @@ target_link_libraries(iLQRTest
     ${EIGEN3_LIBS}
     ${HPIPM_LIBS}
 )
-gtest_add_tests(TARGET iLQRTest)
+gtest_add_tests(iLQRTest "" AUTO)
 
 
 if(HPIPM)
@@ -197,7 +197,7 @@ if(HPIPM)
         ${HPIPM_LIBS}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET LQOCSolverTest)
+    gtest_add_tests(LQOCSolverTest "" AUTO)
 
     # 
     #     catkin_add_gtest(ConstrainedLQOCSolverTest test/solver/linear/ConstrainedLQOCSolverTest.cpp)
@@ -209,7 +209,7 @@ if(HPIPM)
         ${HPIPM_LIBS}
         ${GTEST_LIBRARY}
     )
-    gtest_add_tests(TARGET ConstrainedLQOCSolverTest)
+    gtest_add_tests(ConstrainedLQOCSolverTest "" AUTO)
     # 
     #     add_executable(LQOCSolverTiming test/solver/linear/LQOCSolverTiming.cpp)
     #     target_link_libraries(LQOCSolverTiming ${catkin_LIBRARIES} ${MATLAB_LIBS} ${HPIPM_LIBS})
@@ -230,7 +230,7 @@ if(HPIPM)
         ${HPIPM_LIBS}
         ${GTEST_LIBRARY}
     ) 
-    gtest_add_tests(TARGET LinearSystemSolverComparison) 
+    gtest_add_tests(LinearSystemSolverComparison "" AUTO) 
     
     # 
     if(BUILD_EXAMPLES)
@@ -277,7 +277,7 @@ target_link_libraries(LinearSystemTest
     ${HPIPM_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET LinearSystemTest)
+gtest_add_tests(LinearSystemTest "" AUTO)
 
 # 
 # catkin_add_gtest(NonlinearSystemTest test/nloc/NonlinearSystemTest.cpp)
@@ -289,7 +289,7 @@ target_link_libraries(NonlinearSystemTest
     ${HPIPM_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET NonlinearSystemTest)
+gtest_add_tests(NonlinearSystemTest "" AUTO)
 # 
 # add_executable(SymplecticTest test/nloc/SymplecticTest.cpp)
 # target_link_libraries(SymplecticTest ${catkin_LIBRARIES} ${HPIPM_LIBS} ${MATLAB_LIBS})
@@ -300,7 +300,7 @@ target_link_libraries(SymplecticTest
     ${HPIPM_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET SymplecticTest)
+gtest_add_tests(SymplecticTest "" AUTO)
 # 
 # catkin_add_gtest(constraint_comparison test/constraint/ConstraintComparison.cpp)
 # target_link_libraries(constraint_comparison ${catkin_LIBRARIES})
@@ -309,7 +309,7 @@ target_link_libraries(constraint_comparison
     ct_optcon 
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET constraint_comparison)
+gtest_add_tests(constraint_comparison "" AUTO)
 # 
 # catkin_add_gtest(constraint_test test/constraint/ConstraintTest.cpp)
 # target_link_libraries(constraint_test ${catkin_LIBRARIES} )
@@ -318,7 +318,7 @@ target_link_libraries(constraint_test
     ct_optcon 
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET constraint_test)
+gtest_add_tests(constraint_test "" AUTO)
 # 
 # catkin_add_gtest(SparseBoxConstraintTest test/constraint/SparseBoxConstraintTest.cpp)
 # target_link_libraries(SparseBoxConstraintTest ${catkin_LIBRARIES})
@@ -327,7 +327,7 @@ target_link_libraries(SparseBoxConstraintTest
     ct_optcon 
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET SparseBoxConstraintTest)
+gtest_add_tests(SparseBoxConstraintTest "" AUTO)
 # 
 
 get_filename_component(COSTFUNCTION_TEST_DIR "test/costfunction" ABSOLUTE)
@@ -342,7 +342,7 @@ target_link_libraries(CostFunctionTests
     ${GTEST_LIBRARY} 
 )
 target_include_directories(CostFunctionTests PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/test/costfunction)
-gtest_add_tests(TARGET CostFunctionTests)
+gtest_add_tests(CostFunctionTests "" AUTO)
 # catkin_add_gtest(LoadFromFileTest test/costfunction/LoadFromFileTest.cpp)
 # target_link_libraries(LoadFromFileTest ${catkin_LIBRARIES} ${MATLAB_LIBS})
 add_executable(LoadFromFileTest test/costfunction/LoadFromFileTest.cpp)
@@ -352,7 +352,7 @@ target_link_libraries(LoadFromFileTest
     ${GTEST_LIBRARY} 
 )
 target_include_directories(LoadFromFileTest PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/test/costfunction)
-gtest_add_tests(TARGET LoadFromFileTest)
+gtest_add_tests(LoadFromFileTest "" AUTO)
 # 
 # catkin_add_gtest(dms_test test/dms/oscillator/oscDMSTest.cpp)
 # target_link_libraries(dms_test ${catkin_LIBRARIES} ${MATLAB_LIBS} ${NLP_LIBS})
@@ -363,7 +363,7 @@ target_link_libraries(dms_test
     ${NLP_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET dms_test)
+gtest_add_tests(dms_test "" AUTO)
 # 
 # catkin_add_gtest(dms_test_all_var test/dms/oscillator/oscDMSTestAllVariants.cpp)
 # target_link_libraries(dms_test_all_var ${catkin_LIBRARIES} ${MATLAB_LIBS} ${NLP_LIBS})
@@ -374,7 +374,7 @@ target_link_libraries(dms_test_all_var
     ${NLP_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET dms_test_all_var)
+gtest_add_tests(dms_test_all_var "" AUTO)
 # 
 # add_executable(matFilesGenerator test/dms/oscillator/matfiles/matFilesGenerator.cpp)
 # target_link_libraries(matFilesGenerator ${catkin_LIBRARIES} ${MATLAB_LIBS} ${NLP_LIBS})
@@ -385,7 +385,7 @@ target_link_libraries(matFilesGenerator
     ${NLP_LIBS}
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET matFilesGenerator)
+gtest_add_tests(matFilesGenerator "" AUTO)
 # 
 get_filename_component(MPC_TEST_MAT_DIR "test/mpc/matfiles" ABSOLUTE)
 configure_file(test/mpc/mpcTestSettings.h.in test/mpc/mpcTestSettings.h)
@@ -400,7 +400,7 @@ target_link_libraries(NLOC_MPCTest
     ${GTEST_LIBRARY} 
 )
 target_include_directories(NLOC_MPCTest PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/test/mpc)
-gtest_add_tests(TARGET NLOC_MPCTest)
+gtest_add_tests(NLOC_MPCTest "" AUTO)
 # 
 # catkin_add_gtest(system_interface_test test/system_interface/SystemInterfaceTest.cpp)
 # target_link_libraries(system_interface_test ${catkin_LIBRARIES})
@@ -409,7 +409,7 @@ target_link_libraries(system_interface_test
     ct_optcon 
     ${GTEST_LIBRARY} 
 )
-gtest_add_tests(TARGET system_interface_test)
+gtest_add_tests(system_interface_test "" AUTO)
 # 
 # 
 # ## additional prespec tests
@@ -424,7 +424,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET LqrTestPrespec)
+    gtest_add_tests(LqrTestPrespec "" AUTO)
     # 
     if(HPIPM)
         #         catkin_add_gtest(LQOCSolverTestPrespec test/solver/linear/LQOCSolverTestPrespec.cpp)
@@ -438,7 +438,7 @@ if(USE_PRESPEC)
             ${PRESPEC_LIB_NAMES}
             ${GTEST_LIBRARY} 
         )
-        gtest_add_tests(TARGET LQOCSolverTestPrespec)
+        gtest_add_tests(LQOCSolverTestPrespec "" AUTO)
     endif(HPIPM)
 # 
 #     catkin_add_gtest(LinearSystemTestPrespec test/nloc/LinearSystemTestPrespec.cpp)
@@ -451,7 +451,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET LinearSystemTestPrespec)
+    gtest_add_tests(LinearSystemTestPrespec "" AUTO)
 # 
 #     #add_executable(SymplecticTestPrespec test/nloc/SymplecticTestPrespec.cpp)
 #     #target_link_libraries(SymplecticTestPrespec ${catkin_LIBRARIES} ${HPIPM_LIBS} ${MATLAB_LIBS} ${PRESPEC_LIB_NAMES})
@@ -463,7 +463,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET SymplecticTestPrespec)
+    gtest_add_tests(SymplecticTestPrespec "" AUTO)
 # 
 #     catkin_add_gtest(constraint_test_prespec test/constraint/ConstraintTestPrespec.cpp)
 #     target_link_libraries(constraint_test_prespec ${catkin_LIBRARIES} ${PRESPEC_LIB_NAMES})
@@ -473,7 +473,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET constraint_test_prespec)
+    gtest_add_tests(constraint_test_prespec "" AUTO)
 # 
 #     catkin_add_gtest(NLOC_MPCTest_prespec test/mpc/NLOC_MPCTest_prespec.cpp)
 #     target_link_libraries(NLOC_MPCTest_prespec ${catkin_LIBRARIES} ${MATLAB_LIBS} ${HPIPM_LIBS} ${PRESPEC_LIB_NAMES})
@@ -485,7 +485,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET NLOC_MPCTest_prespec)
+    gtest_add_tests(NLOC_MPCTest_prespec "" AUTO)
 # 
 #     catkin_add_gtest(system_interface_test_prespec test/system_interface/SystemInterfaceTest-Prespec.cpp)
 #     target_link_libraries(system_interface_test_prespec ${catkin_LIBRARIES} ${PRESPEC_LIB_NAMES})
@@ -495,7 +495,7 @@ if(USE_PRESPEC)
         ${PRESPEC_LIB_NAMES}
         ${GTEST_LIBRARY} 
     )
-    gtest_add_tests(TARGET system_interface_test_prespec)
+    gtest_add_tests(system_interface_test_prespec "" AUTO)
 endif(USE_PRESPEC)
 
 install(TARGETS ct_optcon DESTINATION lib/ct)

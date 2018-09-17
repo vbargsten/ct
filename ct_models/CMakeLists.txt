@@ -211,7 +211,7 @@ target_link_libraries(
     ct_models
     ${GTEST_LIBRARY}
 )
-gtest_add_tests(TARGET ikfast_test)
+gtest_add_tests(ikfast_test "" AUTO)
 
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
