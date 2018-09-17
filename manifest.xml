@@ -22,8 +22,9 @@
     <classifier>ubuntu</classifier>
   </classifiers>
 
-  <depend package="base/cmake" />
+  <depend package="cmake" />
   <depend package="eigen3" />
   <depend package="control/kindr" />
   <depend package="control/hpipm" />
+  
 </package>
