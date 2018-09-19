@@ -1,7 +1,7 @@
 project(ct_meta)
 
 #Make sure metapackage does not fail when building documentation
-add_custom_target(doc
+add_custom_target("doc_${PROJECT_NAME}"
         COMMAND ${CMAKE_COMMAND} -E echo_append "Building CT Documentation..."
         VERBATIM)
         
